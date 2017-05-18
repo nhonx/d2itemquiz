@@ -235,20 +235,3 @@ var item_rel = {
 143:[34,6,6],
 145:[96,56]
 };
-function rnd(from, to) {
-    return Math.floor(Math.random() * (to - from + 1)) + from;
-}
-
-var game_width=400;
-var game_height=600;
-var itemcount=145;
-var item_in_element=[142,143,144,81,121,96,146,147];
-var history_item=[];
-function randomBuildItem(){
-	var i=rnd(60,itemcount);
-	while(item_in_element.indexOf(i)>=0 || history_item.indexOf(i)>=0){
-		i=rnd(60,itemcount);
-	}
-	history_item.push(i);
-	return i;
-}
