@@ -11,7 +11,7 @@ game_state.loading.prototype={
     preload: function () {       
         game_state.score = -1;
          var style = {font: "30px Arial", fill: "#ffffff"};
-        this.label_score = this.game.add.text(120, 250, "Loading...", style);        
+        this.label_score = this.game.add.text(120, 250, "Loading..test...", style);        
 	var c=1;     
         var graphics = game.add.graphics(0, 0);
         graphics.lineStyle(5, 0xffd900, 1);
