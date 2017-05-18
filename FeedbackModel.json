@@ -1,0 +1,17 @@
+{
+  "AdId": 123,
+  "MemberId": 123,
+  "AdName": "XYZ",
+  "MemberName": "ASDF",
+  "Score": {
+    "AdPerformance": 1,
+    "Price": 2,
+    "Website": 3,
+    "Support": 4
+  },
+  "Feedback": {
+    "KnowingSource": "Facebook",
+    "ContinueUsing": 1,
+    "Opinion": "This site uses cookies from Google Adsense to personalize ads. Information about your use of this site is shared with Google. By using this site, you agree to its use of cookies. "
+  }
+}
