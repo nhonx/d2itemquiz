@@ -10,3 +10,6 @@ function randomBuildItem(){
 	history_item.push(i);
 	return i;
 }
+function getScore(){
+}
+function submitScore(){}
