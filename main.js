@@ -70,7 +70,9 @@ game_state.main.prototype = {
         this.game.stage.backgroundColor = "#8C521F";
         this.game.stage.disableVisibilityChange = true;
         var i = randomBuildItem();//rnd(60, 145);
-
+        if(i<0){
+            game.stat.start('victory');
+        }
         //this.game.load.image("mainitem", 'item/built/' + i + '.png');
         this.num_recipe = item_rel[i].length;
         this.answer = 0;
@@ -85,9 +87,9 @@ game_state.main.prototype = {
             this.recipe[p] = "item" + item_rel[i][j];
         }
         for (i = 1 + this.num_recipe; i <= 9; i++) {
-          var k = rnd(1, 59);
+          var k = rand.fromTo(1, 59);
              while (item_rel[this.mainid].indexOf(k) != -1)
-                 k = rnd(1, 59);
+                 k = rand.fromTo(1, 59);
              this.othersitem[i]="item"+k;
          }
          //this.game.time.events.remove(this.timer);
@@ -260,9 +262,33 @@ game_state.gameover.prototype = {
     update: function () {
     }
 };
+game_state.victory = function () {
+};
+game_state.victory.prototype = {
+    preload: function () {
+
+        this.game.stage.backgroundColor = "#71c5cf";
+        
+        this.game.load.image('revivebtn', 'assets/revive.png');
+    },
+    create: function () {
+        var style = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8 };
+        this.label_score = this.game.add.text(80, 150, "Congratulation", style);
+        this.finalscore=this.game.add.text(50,200,"Your score: "+game_state.score,style);
+        this.button = this.game.add.button(150, 300, 'playbtn', this.click, this);
+        game_state.score = -1;
+        history_item=[];
+    },
+    click: function () {
+        game.state.start('main');
+    },
+    update: function () {
+    }
+};
 // Add and start the 'main' state to start the game
 game.state.add('loading', game_state.loading);
 game.state.add('mainmenu', game_state.mainmenu);
 game.state.add('main', game_state.main);
 game.state.add('gover', game_state.gameover);
+game.state.add('victory', game_state.victory);
 game.state.start('loading');
