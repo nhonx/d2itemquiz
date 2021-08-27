@@ -22,9 +22,10 @@ game_state.loading.prototype = {
                 graphics.destroy();
             }
         }, this);
-        for (var k in ITEMS) {
-            this.game.load.image("item_" + k, 'dota/' + k + '.png');
-        }
+        // for (var k in ITEMS) {
+        //     this.game.load.image("item_" + k, 'dota/' + k + '.png');
+        // }
+        game.load.atlas('atlas', 'sprite/spritesheet.png', 'sprite/spritesheet.json');
         this.game.load.image('playbtn', 'assets/play.png');
     },
     create: function () {
@@ -79,14 +80,14 @@ game_state.main.prototype = {
 
         for (var j in ITEM_REL[keyItem]) {
             p++;
-            this.recipe[p] = "item_" + ITEM_REL[keyItem][j];
+            this.recipe[p] = ITEM_REL[keyItem][j];
         }
-        this.recipe = ITEM_REL[keyItem].map(x => "item_" + x);
+        this.recipe = ITEM_REL[keyItem].map(x => x);
         for (i = 1 + this.num_recipe; i <= 9; i++) {
             var k = rand.pickIn(ITEMS_IN_ELEMENT);
             while (this.othersitem.includes(k))
                 k = rand.pickIn(ITEMS_IN_ELEMENT);
-            this.othersitem.push("item_" + k);
+            this.othersitem.push(k);
         }
         //this.game.time.events.remove(this.timer);
 
@@ -95,17 +96,37 @@ game_state.main.prototype = {
         // Fuction called after 'preload' to setup the game
         var subitemarr = [...this.recipe, ...this.othersitem];
         subitemarr = Phaser.Utils.shuffle(subitemarr);
-        this.bird = this.game.add.sprite(this.game.width / 2 - 40, 50, 'item_' + this.mainid);
+        this.bird = this.game.add.sprite(this.game.width / 2 - 40, 50, 'atlas');
+        this.bird.frameName = this.mainid + '.png';
         this.bird.inputEnabled = true;
-        this.slot1 = this.game.add.sprite(this.game.width / 4 - 40, 200, subitemarr[0]);
-        this.slot2 = this.game.add.sprite(this.game.width / 2 - 40, 200, subitemarr[1]);
-        this.slot3 = this.game.add.sprite(this.game.width * 3 / 4 - 40, 200, subitemarr[2]);
-        this.slot4 = this.game.add.sprite(this.game.width / 4 - 40, 300, subitemarr[3]);
-        this.slot5 = this.game.add.sprite(this.game.width / 2 - 40, 300, subitemarr[4]);
-        this.slot6 = this.game.add.sprite(this.game.width * 3 / 4 - 40, 300, subitemarr[5]);
-        this.slot7 = this.game.add.sprite(this.game.width / 4 - 40, 400, subitemarr[6]);
-        this.slot8 = this.game.add.sprite(this.game.width / 2 - 40, 400, subitemarr[7]);
-        this.slot9 = this.game.add.sprite(this.game.width * 3 / 4 - 40, 400, subitemarr[8]);
+        this.slot1 = this.game.add.sprite(this.game.width / 4 - 40, 200, 'atlas');
+        this.slot1.frameName = subitemarr[0] + '.png';
+        this.slot1.itemId = subitemarr[0];
+        this.slot2 = this.game.add.sprite(this.game.width / 2 - 40, 200, 'atlas');
+        this.slot2.frameName = subitemarr[1] + '.png';
+        this.slot2.itemId = subitemarr[1];
+        this.slot3 = this.game.add.sprite(this.game.width * 3 / 4 - 40, 200, 'atlas');
+        this.slot3.frameName = subitemarr[2] + '.png';
+        this.slot3.itemId = subitemarr[2];
+        this.slot4 = this.game.add.sprite(this.game.width / 4 - 40, 300, 'atlas');
+        this.slot4.frameName = subitemarr[3] + '.png';
+        this.slot4.itemId = subitemarr[3];
+        this.slot5 = this.game.add.sprite(this.game.width / 2 - 40, 300, 'atlas');
+        this.slot5.frameName = subitemarr[4] + '.png';
+        this.slot5.itemId = subitemarr[4];
+        this.slot6 = this.game.add.sprite(this.game.width * 3 / 4 - 40, 300, 'atlas');
+        this.slot6.frameName = subitemarr[5] + '.png';
+        this.slot6.itemId = subitemarr[5];
+        this.slot7 = this.game.add.sprite(this.game.width / 4 - 40, 400, 'atlas');
+        this.slot7.frameName = subitemarr[6] + '.png';
+        this.slot7.itemId = subitemarr[6];
+        this.slot8 = this.game.add.sprite(this.game.width / 2 - 40, 400, 'atlas');
+        this.slot8.frameName = subitemarr[7] + '.png';
+        this.slot8.itemId = subitemarr[7];
+        this.slot9 = this.game.add.sprite(this.game.width * 3 / 4 - 40, 400, 'atlas');
+        this.slot9.frameName = subitemarr[8] + '.png';
+        this.slot9.itemId = subitemarr[8];
+
         this.slot1.inputEnabled = true;
         this.slot2.inputEnabled = true;
         this.slot3.inputEnabled = true;
@@ -132,7 +153,7 @@ game_state.main.prototype = {
             if (this.slot1.input.checkPointerOver(this.input.activePointer) == true) {
 
                 this.slot1.alpha = 0.5;
-                if (this.recipe.indexOf(this.slot1.key) == -1)
+                if (this.recipe.indexOf(this.slot1.itemId) == -1)
                     game.state.start('gover');
                 else
                     this.answer++;
@@ -142,7 +163,7 @@ game_state.main.prototype = {
             if (this.slot2.input.checkPointerOver(this.input.activePointer) == true) {
                 this.slot2.alpha = 0.5;
 
-                if (this.recipe.indexOf(this.slot2.key) == -1)
+                if (this.recipe.indexOf(this.slot2.itemId) == -1)
                     game.state.start('gover');
                 else
                     this.answer++;
@@ -151,7 +172,7 @@ game_state.main.prototype = {
             if (this.slot3.input.checkPointerOver(this.input.activePointer) == true) {
                 this.slot3.alpha = 0.5;
 
-                if (this.recipe.indexOf(this.slot3.key) == -1)
+                if (this.recipe.indexOf(this.slot3.itemId) == -1)
                     game.state.start('gover');
                 else
                     this.answer++;
@@ -160,7 +181,7 @@ game_state.main.prototype = {
             if (this.slot4.input.checkPointerOver(this.input.activePointer) == true) {
                 this.slot4.alpha = 0.5;
 
-                if (this.recipe.indexOf(this.slot4.key) == -1)
+                if (this.recipe.indexOf(this.slot4.itemId) == -1)
                     game.state.start('gover');
                 else
                     this.answer++;
@@ -169,7 +190,7 @@ game_state.main.prototype = {
             if (this.slot5.input.checkPointerOver(this.input.activePointer) == true) {
                 this.slot5.alpha = 0.5;
 
-                if (this.recipe.indexOf(this.slot5.key) == -1)
+                if (this.recipe.indexOf(this.slot5.itemId) == -1)
                     game.state.start('gover');
                 else
                     this.answer++;
@@ -178,7 +199,7 @@ game_state.main.prototype = {
             if (this.slot6.input.checkPointerOver(this.input.activePointer) == true) {
                 this.slot6.alpha = 0.5;
 
-                if (this.recipe.indexOf(this.slot6.key) == -1)
+                if (this.recipe.indexOf(this.slot6.itemId) == -1)
                     game.state.start('gover');
                 else
                     this.answer++;
@@ -187,7 +208,7 @@ game_state.main.prototype = {
             if (this.slot7.input.checkPointerOver(this.input.activePointer) == true) {
                 this.slot7.alpha = 0.5;
 
-                if (this.recipe.indexOf(this.slot7.key) == -1)
+                if (this.recipe.indexOf(this.slot7.itemId) == -1)
                     game.state.start('gover');
                 else
                     this.answer++;
@@ -196,7 +217,7 @@ game_state.main.prototype = {
             if (this.slot8.input.checkPointerOver(this.input.activePointer) == true) {
                 this.slot8.alpha = 0.5;
 
-                if (this.recipe.indexOf(this.slot8.key) == -1)
+                if (this.recipe.indexOf(this.slot8.itemId) == -1)
                     game.state.start('gover');
                 else
                     this.answer++;
@@ -205,7 +226,7 @@ game_state.main.prototype = {
             if (this.slot9.input.checkPointerOver(this.input.activePointer) == true) {
                 this.slot9.alpha = 0.5;
 
-                if (this.recipe.indexOf(this.slot9.key) == -1)
+                if (this.recipe.indexOf(this.slot9.itemId) == -1)
                     game.state.start('gover');
                 else
                     this.answer++;
@@ -216,13 +237,13 @@ game_state.main.prototype = {
     },
     update: function () {
         this.time++;
-        if (this.time > 1800) {
+        if (this.time > 240) {
             this.time = 0;
             game.state.start('gover');
         }
         var graphics = game.add.graphics(0, 0);
         graphics.lineStyle(10, 0xffd900, 1);
-        graphics.drawRect(0, 0, Math.floor(game_width * this.time / 1800, 0), 5);
+        graphics.drawRect(0, 0, Math.floor(game_width * this.time / 240, 0), 5);
 
     }
 };

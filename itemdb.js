@@ -933,7 +933,7 @@ var ITEM_REL = {
         "recipe"
     ],
     "wind_waker": [
-        "maelstrom",
+        "euls_scepter_of_divinity",
         "mystic_staff",
         "recipe"
     ],
