@@ -1,6 +1,6 @@
-// Initialize Phaser, and creates a 400x490px game
+// Initialize Phaser
 
-var game = new Phaser.Game(game_width, game_height, Phaser.CANVAS, 'game_div');
+var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game_div');
 var game_state = {};
 game_state.score = -1;
 // Creates a new 'main' state that wil contain the game
@@ -12,19 +12,8 @@ game_state.loading.prototype = {
         game_state.score = -1;
         var style = { font: "30px Arial", fill: "#ffffff" };
         this.label_score = this.game.add.text(120, 250, "Loading...", style);
-        var c = 1;
         var graphics = game.add.graphics(0, 0);
         graphics.lineStyle(5, 0xffd900, 1);
-        this.game.load.onFileComplete.add(function () {
-            c++;
-            graphics.drawRect(0, 0, Math.floor(game_width * c / ITEM_COUNT, 0), 5);
-            if (c >= ITEM_COUNT) {
-                graphics.destroy();
-            }
-        }, this);
-        // for (var k in ITEMS) {
-        //     this.game.load.image("item_" + k, 'dota/' + k + '.png');
-        // }
         game.load.atlas('atlas', 'sprite/spritesheet.png', 'sprite/spritesheet.json');
         this.game.load.image('playbtn', 'assets/play.png');
     },
@@ -48,9 +37,11 @@ game_state.mainmenu.prototype = {
 
     },
     create: function () {
-        var style = { font: "bold 40pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8 };
-        this.label_score = this.game.add.text(50, 150, "D2Item Quiz", style);
-        this.button = this.game.add.button(150, 300, 'playbtn', this.click, this);
+        var style = { font: "bold 40pt Arial", fill: "#ffffff", stroke: "#258acc", strokeThickness: 8, boundsAlignH: "center", boundsAlignV: "middle" };
+        this.label_score = this.game.add.text(0, 0, "D2Item Quiz", style);
+        this.label_score.setTextBounds(0, 100, GAME_WIDTH, 100)
+        this.button = this.game.add.button(game.world.centerX, game.world.centerY, 'playbtn', this.click, this);
+        this.button.anchor.set(0.5);
     },
     click: function () {
         game.state.start('main');
@@ -69,12 +60,11 @@ game_state.main.prototype = {
         if (!keyItem) {
             game.stat.start('victory');
         }
-        //this.game.load.image("mainitem", 'item/built/' + i + '.png');
         this.num_recipe = ITEM_REL[keyItem].length;
         this.answer = 0;
         this.recipe = [];
         this.othersitem = [];
-        this.mainid = keyItem;//ITEMS[keyItem].index;
+        this.mainid = keyItem;
         game_state.score++;
         var p = 0;
 
@@ -85,7 +75,7 @@ game_state.main.prototype = {
         this.recipe = ITEM_REL[keyItem].map(x => x);
         for (i = 1 + this.num_recipe; i <= 9; i++) {
             var k = rand.pickIn(ITEMS_IN_ELEMENT);
-            while (this.othersitem.includes(k))
+            while (this.othersitem.includes(k) || k == keyItem)
                 k = rand.pickIn(ITEMS_IN_ELEMENT);
             this.othersitem.push(k);
         }
@@ -95,7 +85,7 @@ game_state.main.prototype = {
     create: function () {
         // Fuction called after 'preload' to setup the game
         var subitemarr = [...this.recipe, ...this.othersitem];
-        subitemarr = Phaser.Utils.shuffle(subitemarr);
+        subitemarr = rand.give(subitemarr).shuffle();
         this.bird = this.game.add.sprite(this.game.width / 2 - 40, 50, 'atlas');
         this.bird.frameName = this.mainid + '.png';
         this.bird.inputEnabled = true;
@@ -139,7 +129,7 @@ game_state.main.prototype = {
         this.game.input.onTap.add(this.select, this);
         var style = { font: "bold 40pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8 };
         this.label_score = this.game.add.text(200, 500, "zxc", style);
-        this.label_score.content = game_state.score;
+        this.label_score.text = game_state.score;
         //this.timer=this.game.time.events.loop(100,this.timecount,this);
         this.time = 0;
         //var style = {font: "30px Arial", fill: "#ffffff"};
@@ -237,13 +227,13 @@ game_state.main.prototype = {
     },
     update: function () {
         this.time++;
-        if (this.time > 240) {
+        if (this.time > TIME_PER_ROUND_SECONDS * 60) {
             this.time = 0;
             game.state.start('gover');
         }
         var graphics = game.add.graphics(0, 0);
         graphics.lineStyle(10, 0xffd900, 1);
-        graphics.drawRect(0, 0, Math.floor(game_width * this.time / 240, 0), 5);
+        graphics.drawRect(0, 0, Math.floor(GAME_WIDTH * this.time / (TIME_PER_ROUND_SECONDS * 60), 0), 5);
 
     }
 };
@@ -257,10 +247,13 @@ game_state.gameover.prototype = {
         this.game.load.image('revivebtn', 'assets/revive.png');
     },
     create: function () {
-        var style = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8 };
-        this.label_score = this.game.add.text(80, 150, "Game Over", style);
-        this.finalscore = this.game.add.text(50, 200, "Your score: " + game_state.score, style);
-        this.button = this.game.add.button(150, 300, 'playbtn', this.click, this);
+        var style = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8, boundsAlignH: "center", boundsAlignV: "middle" };
+        this.label_score = this.game.add.text(0, 0, "Game Over", style);
+        this.label_score.setTextBounds(0, 100, GAME_WIDTH, 100)
+        this.finalscore = this.game.add.text(0, 0, "Your score: " + game_state.score, style);
+        this.finalscore.setTextBounds(0, 150, GAME_WIDTH, 150)
+        this.button = this.game.add.button(game.world.centerX, game.world.centerY, 'playbtn', this.click, this);
+        this.button.anchor.set(0.5);
         game_state.score = -1;
         HISTORY_ITEM = [];
     },
@@ -280,9 +273,11 @@ game_state.victory.prototype = {
         this.game.load.image('revivebtn', 'assets/revive.png');
     },
     create: function () {
-        var style = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8 };
-        this.label_score = this.game.add.text(80, 150, "Congratulation", style);
-        this.finalscore = this.game.add.text(50, 200, "Your score: " + game_state.score, style);
+        var style = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8 , boundsAlignH: "center", boundsAlignV: "middle" };
+        this.label_score = this.game.add.text(0, 0, "Congratulation", style);
+        this.label_score.setTextBounds(0, 100, GAME_WIDTH, 100)
+        this.finalscore = this.game.add.text(0, 0, "Your score: " + game_state.score, style);
+        this.finalscore.setTextBounds(0, 100, GAME_WIDTH, 100)
         this.button = this.game.add.button(150, 300, 'playbtn', this.click, this);
         game_state.score = -1;
         HISTORY_ITEM = [];
