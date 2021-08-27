@@ -1,17 +1,19 @@
 
-function randomBuildItem(){
-	if(history_item.length==itemcount) return -1;
-	var i=rand.fromTo(60,itemcount);
-	if(test_items.length==0){
-		while(item_in_element.indexOf(i)>=0 || history_item.indexOf(i)>=0 || excluded_ids.indexOf(i)>=0){
-		i=rand.fromTo(60,itemcount);
+function randomBuildItem() {
+	if (HISTORY_ITEM.length == ITEM_COUNT) return null;
+	// var i = rand.fromTo(0, ITEM_COUNT);
+	var i = rand.pickIn(Object.keys(ITEM_REL))
+	if (TEST_ITEMS.length == 0) {
+		while (HISTORY_ITEM.indexOf(i) >= 0 || EXCLUDE_IDS.indexOf(i) >= 0) {
+			// i = rand.fromTo(60, ITEM_COUNT);
+			i = rand.pickIn(Object.keys(ITEM_REL))
 		}
 	} else {
-		i=rand.pickIn(test_items);
-	}	
-	history_item.push(i);
+		i = rand.pickIn(TEST_ITEMS);
+	}
+	HISTORY_ITEM.push(i);
 	return i;
 }
-function getScore(){
+function getScore() {
 }
-function submitScore(){}
+function submitScore() { }
