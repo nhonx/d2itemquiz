@@ -3,6 +3,13 @@
 var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game_div');
 var game_state = {};
 game_state.score = -1;
+WebFontConfig = {
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, game_state.loading, this); },
+    google: {
+      families: ['Lakki Reddy']
+    }
+
+};
 // Creates a new 'main' state that wil contain the game
 game_state.loading = function () {
 
@@ -10,18 +17,23 @@ game_state.loading = function () {
 game_state.loading.prototype = {
     preload: function () {
         game_state.score = -1;
-        var style = { font: "30px Arial", fill: "#ffffff" };
-        this.label_score = this.game.add.text(120, 250, "Loading...", style);
+        var style = {fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" };
+        this.label_score = this.game.add.text(0, 0, "Loading...", style);
+        this.label_score.setTextBounds(0, 150, GAME_WIDTH, 150)
+        this.label_score.font = 'Lakki Reddy';
+        this.label_score.fontSize = 90;
         var graphics = game.add.graphics(0, 0);
         graphics.lineStyle(5, 0xffd900, 1);
         game.load.atlas('atlas', 'sprite/spritesheet.png', 'sprite/spritesheet.json');
         this.game.load.image('playbtn', 'assets/play.png');
+        this.game.load.image('background', 'assets/secretshop.jpg');
+        this.game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     },
     create: function () {
 
     },
     update: function () {
-        var tempSprite = game.add.sprite(game.world.randomX, game.world.randomY, 'playbtn');
+        var tempSprite = game.add.sprite(GAME_WIDTH, GAME_HEIGHT, 'playbtn');
         if (tempSprite != null)
             game.state.start('mainmenu');
     }
@@ -37,8 +49,13 @@ game_state.mainmenu.prototype = {
 
     },
     create: function () {
-        var style = { font: "bold 40pt Arial", fill: "#ffffff", stroke: "#258acc", strokeThickness: 8, boundsAlignH: "center", boundsAlignV: "middle" };
-        this.label_score = this.game.add.text(0, 0, "D2Item Quiz", style);
+        this.bg = this.game.add.image(0, 0, 'background')
+        this.bg.setScaleMinMax(0.7,1.5);
+        this.bg.anchor.set(0.1,0.25);
+        var style = {fill: "#9a3939", stroke: "#736623", strokeThickness: 3, boundsAlignH: "center", boundsAlignV: "middle" };
+        this.label_score = this.game.add.text(0, 0, "SHOPKEEPER QUIZ!!", style);
+        this.label_score.font = 'Lakki Reddy';
+        this.label_score.fontSize = 90;
         this.label_score.setTextBounds(0, 100, GAME_WIDTH, 100)
         this.button = this.game.add.button(game.world.centerX, game.world.centerY, 'playbtn', this.click, this);
         this.button.anchor.set(0.5);
@@ -88,34 +105,44 @@ game_state.main.prototype = {
         subitemarr = rand.give(subitemarr).shuffle();
         this.bird = this.game.add.sprite(this.game.width / 2 - 40, 50, 'atlas');
         this.bird.frameName = this.mainid + '.png';
+        this.bird.scale.setTo(2,2)
         this.bird.inputEnabled = true;
         this.slot1 = this.game.add.sprite(this.game.width / 4 - 40, 200, 'atlas');
         this.slot1.frameName = subitemarr[0] + '.png';
         this.slot1.itemId = subitemarr[0];
+        this.slot1.scale.setTo(2,2)
         this.slot2 = this.game.add.sprite(this.game.width / 2 - 40, 200, 'atlas');
         this.slot2.frameName = subitemarr[1] + '.png';
         this.slot2.itemId = subitemarr[1];
+        this.slot2.scale.setTo(2,2)
         this.slot3 = this.game.add.sprite(this.game.width * 3 / 4 - 40, 200, 'atlas');
         this.slot3.frameName = subitemarr[2] + '.png';
         this.slot3.itemId = subitemarr[2];
+        this.slot3.scale.setTo(2,2)
         this.slot4 = this.game.add.sprite(this.game.width / 4 - 40, 300, 'atlas');
         this.slot4.frameName = subitemarr[3] + '.png';
         this.slot4.itemId = subitemarr[3];
+        this.slot4.scale.setTo(2,2)
         this.slot5 = this.game.add.sprite(this.game.width / 2 - 40, 300, 'atlas');
         this.slot5.frameName = subitemarr[4] + '.png';
         this.slot5.itemId = subitemarr[4];
+        this.slot5.scale.setTo(2,2)
         this.slot6 = this.game.add.sprite(this.game.width * 3 / 4 - 40, 300, 'atlas');
         this.slot6.frameName = subitemarr[5] + '.png';
         this.slot6.itemId = subitemarr[5];
+        this.slot6.scale.setTo(2,2)
         this.slot7 = this.game.add.sprite(this.game.width / 4 - 40, 400, 'atlas');
         this.slot7.frameName = subitemarr[6] + '.png';
         this.slot7.itemId = subitemarr[6];
+        this.slot7.scale.setTo(2,2)
         this.slot8 = this.game.add.sprite(this.game.width / 2 - 40, 400, 'atlas');
         this.slot8.frameName = subitemarr[7] + '.png';
         this.slot8.itemId = subitemarr[7];
+        this.slot8.scale.setTo(2,2)
         this.slot9 = this.game.add.sprite(this.game.width * 3 / 4 - 40, 400, 'atlas');
         this.slot9.frameName = subitemarr[8] + '.png';
         this.slot9.itemId = subitemarr[8];
+        this.slot9.scale.setTo(2,2)
 
         this.slot1.inputEnabled = true;
         this.slot2.inputEnabled = true;
@@ -247,8 +274,13 @@ game_state.gameover.prototype = {
         this.game.load.image('revivebtn', 'assets/revive.png');
     },
     create: function () {
-        var style = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8, boundsAlignH: "center", boundsAlignV: "middle" };
+        this.bg = this.game.add.image(0, 0, 'background')
+        this.bg.setScaleMinMax(0.7,1.5);
+        this.bg.anchor.set(0.1,0.25);
+        var style = { font: "bold 30pt Arial", fill: "#9a3939", align: "center", stroke: "#736623", strokeThickness: 3, boundsAlignH: "center", boundsAlignV: "middle" };
         this.label_score = this.game.add.text(0, 0, "Game Over", style);
+        this.label_score.font = 'Lakki Reddy';
+        this.label_score.fontSize = 90;
         this.label_score.setTextBounds(0, 100, GAME_WIDTH, 100)
         this.finalscore = this.game.add.text(0, 0, "Your score: " + game_state.score, style);
         this.finalscore.setTextBounds(0, 150, GAME_WIDTH, 150)
@@ -273,7 +305,7 @@ game_state.victory.prototype = {
         this.game.load.image('revivebtn', 'assets/revive.png');
     },
     create: function () {
-        var style = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8 , boundsAlignH: "center", boundsAlignV: "middle" };
+        var style = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#258acc", strokeThickness: 8, boundsAlignH: "center", boundsAlignV: "middle" };
         this.label_score = this.game.add.text(0, 0, "Congratulation", style);
         this.label_score.setTextBounds(0, 100, GAME_WIDTH, 100)
         this.finalscore = this.game.add.text(0, 0, "Your score: " + game_state.score, style);
